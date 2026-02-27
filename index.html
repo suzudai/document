@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bloom Method LP</title>
+    <style>
+      :root {
+        --bg: #fff8f7;
+        --primary: #ea6784;
+        --primary-dark: #d54465;
+        --text: #332c3b;
+        --muted: #6d6279;
+        --card: #ffffff;
+        --accent: #ffe4ee;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
+        color: var(--text);
+        background: linear-gradient(180deg, #fff 0%, var(--bg) 60%, #fff 100%);
+        line-height: 1.8;
+      }
+
+      .hero {
+        position: relative;
+        overflow: hidden;
+        background: radial-gradient(circle at 80% 20%, #ffd6e4 0%, #fff0f5 40%, #fff 75%);
+        padding: 72px 20px 64px;
+      }
+
+      .hero::before,
+      .hero::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(2px);
+      }
+
+      .hero::before {
+        width: 280px;
+        height: 280px;
+        background: #ffd6e4;
+        right: -80px;
+        top: -60px;
+        opacity: 0.8;
+      }
+
+      .hero::after {
+        width: 220px;
+        height: 220px;
+        background: #ffeaf1;
+        left: -70px;
+        bottom: -90px;
+      }
+
+      .container {
+        position: relative;
+        z-index: 1;
+        max-width: 980px;
+        margin: 0 auto;
+      }
+
+      .hero-badge {
+        display: inline-block;
+        background: #fff;
+        border: 1px solid #ffd2df;
+        color: var(--primary-dark);
+        border-radius: 999px;
+        padding: 6px 16px;
+        font-size: 13px;
+        letter-spacing: 0.06em;
+      }
+
+      h1 {
+        margin: 16px 0 12px;
+        font-size: clamp(32px, 5vw, 54px);
+        line-height: 1.25;
+        letter-spacing: 0.01em;
+      }
+
+      .highlight {
+        color: var(--primary-dark);
+      }
+
+      .lead {
+        margin: 0;
+        max-width: 620px;
+        color: var(--muted);
+        font-size: 17px;
+      }
+
+      .cta-row {
+        margin-top: 28px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .btn {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 999px;
+        padding: 13px 24px;
+        text-decoration: none;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+      }
+
+      .btn-primary {
+        background: linear-gradient(120deg, var(--primary) 0%, #f08ea4 100%);
+        color: #fff;
+        box-shadow: 0 12px 26px rgba(234, 103, 132, 0.3);
+      }
+
+      .btn-sub {
+        background: #fff;
+        border: 1px solid #f8bfd0;
+        color: var(--primary-dark);
+      }
+
+      .section {
+        padding: 74px 20px;
+      }
+
+      .section-title {
+        text-align: center;
+        margin: 0 0 34px;
+        font-size: clamp(24px, 3.6vw, 38px);
+      }
+
+      .problem-grid,
+      .feature-grid,
+      .plan-grid {
+        display: grid;
+        gap: 18px;
+      }
+
+      .problem-grid {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+
+      .card {
+        background: var(--card);
+        border-radius: 18px;
+        padding: 24px;
+        border: 1px solid #ffe1ea;
+        box-shadow: 0 9px 24px rgba(221, 173, 189, 0.17);
+      }
+
+      .card h3 {
+        margin: 0 0 8px;
+        font-size: 18px;
+      }
+
+      .card p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .feature-wrap {
+        background: linear-gradient(180deg, #fff, #fff2f6);
+      }
+
+      .feature-grid {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      }
+
+      .feature-no {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: var(--primary-dark);
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+        margin-bottom: 14px;
+      }
+
+      .voice {
+        display: grid;
+        gap: 16px;
+      }
+
+      .voice-item {
+        background: #fff;
+        border-left: 5px solid #f4a6bc;
+        padding: 20px 22px;
+        border-radius: 12px;
+      }
+
+      .voice-item p {
+        margin: 0;
+      }
+
+      .voice-item small {
+        display: block;
+        margin-top: 8px;
+        color: var(--muted);
+      }
+
+      .plan-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      }
+
+      .plan-price {
+        margin: 14px 0;
+        color: var(--primary-dark);
+        font-size: 30px;
+        font-weight: 800;
+      }
+
+      .last-cta {
+        background: linear-gradient(140deg, #f55f87 0%, #f79cb4 100%);
+        text-align: center;
+        color: #fff;
+        border-radius: 26px;
+        padding: 50px 24px;
+      }
+
+      .last-cta p {
+        margin: 0 0 16px;
+      }
+
+      .last-cta .btn {
+        background: #fff;
+        color: var(--primary-dark);
+      }
+
+      footer {
+        text-align: center;
+        padding: 36px 20px 50px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="hero">
+      <div class="container">
+        <span class="hero-badge">女性向けセルフブランディング講座</span>
+        <h1>
+          迷いを自信に変える、<br />
+          <span class="highlight">Bloom Method</span>
+        </h1>
+        <p class="lead">
+          SNS発信・商品設計・セールス導線を一気通貫で整え、
+          「私らしいビジネス」を最短90日で形にする実践プログラムです。
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#offer">無料説明会に申し込む</a>
+          <a class="btn btn-sub" href="#voice">受講者の声を見る</a>
+        </div>
+      </div>
+    </header>
+
+    <section class="section">
+      <div class="container">
+        <h2 class="section-title">こんなお悩み、ありませんか？</h2>
+        <div class="problem-grid">
+          <article class="card">
+            <h3>発信しても反応がない</h3>
+            <p>毎日投稿しているのに、申し込みや問い合わせに繋がらない。</p>
+          </article>
+          <article class="card">
+            <h3>商品が作りきれない</h3>
+            <p>何を売ればいいか分からず、ずっと準備中のまま止まってしまう。</p>
+          </article>
+          <article class="card">
+            <h3>価格に自信が持てない</h3>
+            <p>安売りしてしまい、頑張っているのに利益が残らない。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section feature-wrap">
+      <div class="container">
+        <h2 class="section-title">Bloom Methodの3ステップ</h2>
+        <div class="feature-grid">
+          <article class="card">
+            <div class="feature-no">1</div>
+            <h3>世界観の言語化</h3>
+            <p>あなたの強み・価値観・実績を棚卸しし、選ばれる軸を明確にします。</p>
+          </article>
+          <article class="card">
+            <div class="feature-no">2</div>
+            <h3>売れる導線設計</h3>
+            <p>プロフィール・LP・LINE導線を整え、自然に申込みが生まれる流れを作ります。</p>
+          </article>
+          <article class="card">
+            <div class="feature-no">3</div>
+            <h3>実践と改善</h3>
+            <p>週次の添削と個別フィードバックで、成果が出るまで伴走します。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="voice">
+      <div class="container">
+        <h2 class="section-title">受講者の声</h2>
+        <div class="voice">
+          <div class="voice-item">
+            <p>講座開始2ヶ月で初めての30万円商品が成約。自分の言葉で価値を伝えられるようになりました。</p>
+            <small>32歳 / コーチ業</small>
+          </div>
+          <div class="voice-item">
+            <p>投稿の方向性が定まり、フォロワー数より「濃い見込み客」が増えたのが大きな変化です。</p>
+            <small>28歳 / デザイナー</small>
+          </div>
+          <div class="voice-item">
+            <p>LINEの導線を整えたら、体験セッションの申込率が3倍に。やることが明確になりました。</p>
+            <small>35歳 / セラピスト</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="offer">
+      <div class="container">
+        <h2 class="section-title">選べるプラン</h2>
+        <div class="plan-grid">
+          <article class="card">
+            <h3>ライトプラン</h3>
+            <p class="plan-price">¥49,800</p>
+            <p>動画講座 + ワークシート + 月1回グループQ&A</p>
+          </article>
+          <article class="card">
+            <h3>スタンダードプラン</h3>
+            <p class="plan-price">¥128,000</p>
+            <p>個別コンサル3回 + 導線設計 + 投稿添削サポート</p>
+          </article>
+          <article class="card">
+            <h3>プレミアムプラン</h3>
+            <p class="plan-price">¥298,000</p>
+            <p>90日伴走 + LP改善 + 個別チャット無制限</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="last-cta">
+          <h2>まずは無料説明会で、今の課題を整理しませんか？</h2>
+          <p>参加者限定で「選ばれるプロフィール設計テンプレート」をプレゼント中。</p>
+          <a class="btn" href="#">今すぐ日程を確認する</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>© 2026 Bloom Method. All Rights Reserved.</footer>
+  </body>
+</html>
